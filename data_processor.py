@@ -30,8 +30,6 @@ def entries_in_string(entries, target_string):
         if entry in target_string:
             return True
     return False
-
-
 def copy_files(source_dir, destination_dir):
     if not os.path.exists(destination_dir):
         os.makedirs(destination_dir)

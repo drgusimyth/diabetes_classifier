@@ -4,9 +4,11 @@ import torch.nn as nn
 from torchvision import models, transforms
 from PIL import Image
 import torch.nn.functional as F
+import matplotlib.pyplot as plt
 
 
-d = 'dataset/test/diabetic'
+test_class = int(input("Test model on healthy (1) or diabetic (0) patient"))
+d = 'dataset/sfljsl' if test_class == 1 else 'dataset/diabetes_patient_test2'
 #image_path = os.path.join(d, os.listdir(d)[0])
 
 
@@ -14,7 +16,7 @@ d = 'dataset/test/diabetic'
 model = models.resnet50()
 num_ftrs = model.fc.in_features
 model.fc = nn.Linear(num_ftrs, 2)
-model.load_state_dict(torch.load('vascular_scan_classifier.pth', map_location=torch.device('cpu'), weights_only=True))
+model.load_state_dict(torch.load('models /vascular_scan_classifier.pth', map_location=torch.device('cpu'), weights_only=True))
 model.eval()
 
 # Transformation
@@ -26,7 +28,8 @@ transform = transforms.Compose([
 ])
 
 correct = 0
-total = len(os.listdir(d))
+total = 0
+incorrect = []
 for file in os.listdir(d):
     image_path = os.path.join(d, file)
     # Inference on a new image
@@ -42,11 +45,20 @@ for file in os.listdir(d):
             _, predicted = torch.max(output, 1)
             probabilities = F.softmax(output, dim=1)  # Apply softmax to get probabilities
             result = 'Healthy' if predicted.item() == 1 else 'Diabetic'
-            if predicted.item() == 0:
+            if predicted.item() == test_class:
                 correct += 1
+            else:
+                file_name = os.path.splitext(os.path.basename(file))[0]
+                incorrect.append(file_name)
+            total += 1
             print('Predicted: ' + result)
             print(f"Class probabilities: {probabilities.squeeze().tolist()}")
     except:
         pass
+
 print(f"Accuracy (%):  {(correct/total) * 100}" "%")
+incorrect.sort()
+print(f"Incorrect identifications: {incorrect}")
+plt.hist(incorrect, bins=700, range=(1000, 1700))
+plt.show()
 

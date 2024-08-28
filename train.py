@@ -4,7 +4,7 @@ from torchvision import models, transforms
 from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
 from torch.optim import Adam
-from torchvision.models import ResNet50_Weights
+
 
 # Data transformation and augmentation
 transform = transforms.Compose([
@@ -12,16 +12,16 @@ transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
-print ("trasform complete")
+print("Transform Complete")
 # Load datasets
 train_dataset = ImageFolder(root='dataset/train', transform=transform)
 val_dataset = ImageFolder(root='dataset/val', transform=transform)
 
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
-print("loading pretrained")
+print("Loading Model")
 # Load pre-trained ResNet model
-model = models.resnet50(weights=ResNet50_Weights.IMAGENET1K_V1)
+model = models.resnet50(pretrained=True)
 num_ftrs = model.fc.in_features
 model.fc = nn.Linear(num_ftrs, 2)
 
@@ -29,7 +29,7 @@ model.fc = nn.Linear(num_ftrs, 2)
 criterion = nn.CrossEntropyLoss()
 optimizer = Adam(model.parameters(), lr=0.001)
 
-print("beginning training")
+print("Beginning Training")
 # Training loop
 num_epochs = 25
 for epoch in range(num_epochs):
@@ -59,4 +59,4 @@ for epoch in range(num_epochs):
     print(f'Validation Accuracy: {100 * correct / total}%')
 
 # Save model
-torch.save(model.state_dict(), 'vascular_scan_classifier.pth')
+torch.save(model.state_dict(), 'models/vascular_scan_classifier.pth')
