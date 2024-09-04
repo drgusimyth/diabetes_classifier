@@ -6,9 +6,10 @@ from PIL import Image
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
 
-
+print(os.listdir('models'))
+model_name = input("Enter model to test: ")
 test_class = int(input("Test model on healthy (1) or diabetic (0) patient"))
-d = 'dataset/sfljsl' if test_class == 1 else 'dataset/diabetes_patient_test2'
+d = 'std_threshold_test' if test_class == 1 else 'dataset/diabetes_patient_test2'
 #image_path = os.path.join(d, os.listdir(d)[0])
 
 
@@ -16,7 +17,7 @@ d = 'dataset/sfljsl' if test_class == 1 else 'dataset/diabetes_patient_test2'
 model = models.resnet50()
 num_ftrs = model.fc.in_features
 model.fc = nn.Linear(num_ftrs, 2)
-model.load_state_dict(torch.load('models /vascular_scan_classifier.pth', map_location=torch.device('cpu'), weights_only=True))
+model.load_state_dict(torch.load('models/' + model_name + '.pth', map_location=torch.device('cpu'), weights_only=True))
 model.eval()
 
 # Transformation

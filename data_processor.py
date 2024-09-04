@@ -1,6 +1,5 @@
 import os
 import shutil
-from striprtf.striprtf import rtf_to_text
 import names
 
 
@@ -53,7 +52,7 @@ def copy_data(source_dir, destination_dir):
     for patient_dir in os.listdir(source_dir):
         name = present(patient_dir, names.diabetic_list)
         init = ""
-        if "术后" not in patient_dir:
+        if True: #"术后" not in patient_dir:
             if name is not None and name not in moved_patients:  # valid patient to move
                 init = names.diabetic_dict[name]
                 target_base = os.path.join(destination_dir, "diabetic", init)
@@ -68,14 +67,15 @@ def copy_data(source_dir, destination_dir):
                         figure_mask = ""
                         for file_name in os.listdir(os.path.join(patient_dir_full, possible_toe)):
                             # already in toe, find the correct figure_mask
-                            if "_figure_mask" in file_name:
+                            if "_figure_vb" in file_name:
                                 figure_mask = file_name
                                 skip = False
+                                print("no figure vb; not a toe")
                         if not skip:
                             copy_source = os.path.join(patient_dir_full, possible_toe, figure_mask)
                             target = os.path.join(target_base, toe)
                             os.makedirs(target, exist_ok=True)
-                            shutil.copytree(copy_source, os.path.join(target, "figure_mask"), ignore=ignore_files)
+                            shutil.copytree(copy_source, os.path.join(target, "figure_vb"), ignore=ignore_files)
                             print(f"successfully copied from {copy_source} to {target}")
                             moved_toes.add(toe)
                     else:
@@ -96,9 +96,9 @@ def copy_data2(source_dir, destination_dir):
     for patient_dir in os.listdir(source_dir):
         name = present(patient_dir, names.healthy_list)
         init = ""
-        if "术后" not in patient_dir:
-            if name is not None and name not in moved_patients:  # valid patient to move
-                init = names.diabetic_dict[name]
+        if True: #"术后" not in patient_dir:
+            if name is not None: #and name not in moved_patients:  # valid patient to move
+                init = names.healthy_dict[name]
                 target_base = os.path.join(destination_dir, "healthy", init)
                 patient_dir_full = os.path.join(source_dir, patient_dir);
                 moved_toes = set()
@@ -134,7 +134,7 @@ def copy_data2(source_dir, destination_dir):
 # Example usage
 # source_directory = '/Volumes/清湃共享文件夹3/实验数据/3Dfoot（友谊医院）/20240409-趙有芹（术前）（右脚）/240409003_R2/figure_sameframe'
 source_directory = '/Volumes/清湃共享文件夹3/实验数据/3Dfoot（友谊医院）'
-source_directory2 = '/Volumes/清湃共享文件夹3/实验数据/3Dfoot (408P, 50欧)'
+source_directory2 = '/Volumes/清湃共享文件夹3/实验数据/3Dfoot'
 destination_directory = '/Users/tommyzhao/Desktop/data2'
 
 # initialize(destination_directory, names.diabetic_init, names.healthy_init)

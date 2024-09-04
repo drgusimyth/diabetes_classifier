@@ -5,6 +5,7 @@ from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
 from torch.optim import Adam
 
+model_name = input("Enter model name: ")
 
 # Data transformation and augmentation
 transform = transforms.Compose([
@@ -59,4 +60,4 @@ for epoch in range(num_epochs):
     print(f'Validation Accuracy: {100 * correct / total}%')
 
 # Save model
-torch.save(model.state_dict(), 'models/vascular_scan_classifier.pth')
+torch.save(model.state_dict(), 'models/' + model_name + ".pth")
